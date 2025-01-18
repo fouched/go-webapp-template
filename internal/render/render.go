@@ -1,0 +1,114 @@
+package render
+
+import (
+	"embed"
+	"fmt"
+	"github.com/fouched/go-webapp-template/internal/config"
+	"html/template"
+	"net/http"
+	"strings"
+)
+
+var app *config.App
+
+// NewRenderer sets the config for the template package
+func NewRenderer(a *config.App) {
+	app = a
+}
+
+// TemplateData holds data sent from handlers to templates
+type TemplateData struct {
+	StringMap map[string]string
+	IntMap    map[string]int
+	FloatMap  map[string]float32
+	BoolMap   map[string]bool
+	Data      map[string]interface{}
+	CSRFToken string
+	Success   string
+	Warning   string
+	Error     string
+	//AuthLevel  int
+	//UserID     int
+	//UserName   string
+	CSSVersion string
+	//Validator  *validator.Validator
+}
+
+// with the go embed directive below we can compile
+// the templates with the application in a single binary
+//
+//go:embed templates
+var templateFS embed.FS
+
+var functions = template.FuncMap{
+	"unescapeHTML": unescapeHTML,
+}
+
+func unescapeHTML(s string) template.HTML {
+	return template.HTML(s)
+}
+
+func Template(w http.ResponseWriter, r *http.Request, page string, td *TemplateData, partials ...string) error {
+	var t *template.Template
+	var err error
+	templateToRender := fmt.Sprintf("templates/%s.page.gohtml", page)
+
+	_, templateInMap := app.TemplateCache[templateToRender]
+
+	if templateInMap {
+		t = app.TemplateCache[templateToRender]
+	} else {
+		t, err = parseTemplate(partials, page, templateToRender)
+		if err != nil {
+			app.ErrorLog.Println(err)
+			return err
+		}
+	}
+
+	if td == nil {
+		td = &TemplateData{}
+	}
+
+	td = addDefaultData(td, r)
+
+	err = t.Execute(w, td)
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func parseTemplate(partials []string, page, templateToRender string) (*template.Template, error) {
+	var t *template.Template
+	var err error
+
+	// build partials
+	if len(partials) > 0 {
+		for i, x := range partials {
+			partials[i] = fmt.Sprintf("templates/%s.partial.gohtml", x)
+		}
+	}
+
+	if len(partials) > 0 {
+		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
+			ParseFS(templateFS, "templates/base.layout.gohtml", strings.Join(partials, ","), templateToRender)
+	} else {
+		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
+			ParseFS(templateFS, "templates/base.layout.gohtml", templateToRender)
+	}
+
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return nil, err
+	}
+
+	app.TemplateCache[templateToRender] = t
+
+	return t, nil
+}
+
+func addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
+	return td
+}
