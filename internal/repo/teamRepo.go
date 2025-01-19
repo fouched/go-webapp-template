@@ -7,14 +7,14 @@ import (
 )
 
 type postgresTeamRepo struct {
-	DB  *sql.DB
 	App *config.App
+	DB  *sql.DB
 }
 
-func NewTeamRepo(a *config.App, db *sql.DB) TeamRepo {
+func NewTeamRepo(a *config.App) TeamRepo {
 	return &postgresTeamRepo{
-		DB:  db,
 		App: a,
+		DB:  a.DB.SQL,
 	}
 }
 

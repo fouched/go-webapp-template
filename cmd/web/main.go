@@ -54,9 +54,10 @@ func run() (*driver.DB, error) {
 		return nil, err
 	}
 	app.InfoLog.Println("Connected to DB")
+	app.DB = db
 
 	// set up handlers and template rendering
-	hc := handlers.NewHandlerConfig(&app, db)
+	hc := handlers.NewHandlerConfig(&app)
 	handlers.NewHandlers(hc)
 	render.NewRenderer(&app)
 

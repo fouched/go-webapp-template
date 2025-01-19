@@ -2,10 +2,10 @@ package services
 
 import "github.com/fouched/go-webapp-template/internal/models"
 
-type CustomerService interface {
+type CustomerServicer interface {
 	CreateCustomer(request *models.Customer) error
 }
 
-type TeamService interface {
+type TeamServicer interface {
 	CreateTeam(request *models.Team) error
 }

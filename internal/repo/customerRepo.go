@@ -7,14 +7,14 @@ import (
 )
 
 type postgresCustomerRepo struct {
-	DB  *sql.DB
 	App *config.App
+	DB  *sql.DB
 }
 
-func NewCustomerRepo(a *config.App, db *sql.DB) CustomerRepo {
+func NewCustomerRepo(a *config.App) CustomerRepo {
 	return &postgresCustomerRepo{
-		DB:  db,
 		App: a,
+		DB:  a.DB.SQL,
 	}
 }
 
