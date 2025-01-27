@@ -28,6 +28,10 @@ func routes() http.Handler {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(60 * time.Second))
 
+	// add ability to render static resources
+	fileServer := http.FileServer(http.Dir("./static/"))
+	r.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
 	r.Get("/", handlers.Instance.Home)
 
 	return r
