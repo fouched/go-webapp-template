@@ -12,6 +12,10 @@ import (
 func routes() http.Handler {
 	r := chi.NewRouter()
 
+	// sessions
+	r.Use(SessionLoad)
+
+	// CORS
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
 		AllowedOrigins: []string{"https://*", "http://*"},
@@ -22,7 +26,10 @@ func routes() http.Handler {
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
+
+	// Recover from panics, logs the panic, and returns HTTP 500
 	r.Use(middleware.Recoverer)
+
 	// Set a timeout value on the request context (ctx), that will signal
 	// through ctx.Done() that the request has timed out and further
 	// processing should be stopped.

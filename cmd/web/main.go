@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/alexedwards/scs/v2"
 	"github.com/fouched/go-webapp-template/internal/config"
 	"github.com/fouched/go-webapp-template/internal/driver"
 	"github.com/fouched/go-webapp-template/internal/handlers"
@@ -10,9 +11,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 var app config.App
+var session *scs.SessionManager
 
 func main() {
 
@@ -37,6 +40,10 @@ func main() {
 
 func run() (*driver.DB, error) {
 
+	// define complex types that will be stored in the session
+	//gob.Register(models.FooBar{})
+	//gob.Register(map[string]int{})
+
 	// create the template cache
 	app.TemplateCache = make(map[string]*template.Template)
 
@@ -55,6 +62,16 @@ func run() (*driver.DB, error) {
 	}
 	app.InfoLog.Println("Connected to DB")
 	app.DB = db
+
+	// set up session
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	// we can use persistent storage iso cookies for session data, this allows us to
+	// restart the server without users losing the login / session information
+	// https://github.com/alexedwards/scs has various options available
+	//session.Store = mysqlstore.New(conn)
 
 	// set up handlers and template rendering
 	hc := handlers.NewHandlerConfig(&app)
