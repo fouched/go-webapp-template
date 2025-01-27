@@ -21,7 +21,11 @@ func NewCustomerRepo(a *config.App) CustomerRepo {
 func (r *postgresCustomerRepo) Create(c *models.Customer) error {
 	r.App.InfoLog.Println("in postgresCustomerRepo.Create")
 
-	//r.DB.Query()
+	//ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	//defer cancel()
+	//
+	//query := ``
+	//rows, err := r.DB.QueryContext(ctx, query)
 
 	return nil
 }
