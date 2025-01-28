@@ -72,6 +72,7 @@ func run() (*driver.DB, error) {
 	// restart the server without users losing the login / session information
 	// https://github.com/alexedwards/scs has various options available
 	//session.Store = mysqlstore.New(conn)
+	app.Session = session
 
 	// set up handlers and template rendering
 	hc := handlers.NewHandlerConfig(&app)
