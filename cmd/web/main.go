@@ -1,16 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
+	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/fouched/go-webapp-template/internal/config"
 	"github.com/fouched/go-webapp-template/internal/driver"
 	"github.com/fouched/go-webapp-template/internal/handlers"
 	"github.com/fouched/go-webapp-template/internal/render"
+	"github.com/jaswdr/faker/v2"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -63,6 +67,9 @@ func run() (*driver.DB, error) {
 	app.InfoLog.Println("Connected to DB")
 	app.DB = db
 
+	// seed the database ?
+	//seed(db.SQL)
+
 	// set up session
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -71,7 +78,7 @@ func run() (*driver.DB, error) {
 	// we can use persistent storage iso cookies for session data, this allows us to
 	// restart the server without users losing the login / session information
 	// https://github.com/alexedwards/scs has various options available
-	//session.Store = mysqlstore.New(conn)
+	//session.Store = pgxstore.New(db)
 	app.Session = session
 
 	// set up handlers and template rendering
@@ -80,4 +87,30 @@ func run() (*driver.DB, error) {
 	render.NewRenderer(&app)
 
 	return db, nil
+}
+
+func seed(db *sql.DB) {
+	fmt.Println("Start Seeding database")
+	fake := faker.New()
+
+	for i := 0; i < 100; i++ {
+		stmt := `INSERT INTO customer (
+                      customer_name, tel, email, address_1, address_2, address_3, post_code, created_at, updated_at)
+    			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+
+		company := strings.Split(fake.Company().Name(), ",")[0]
+
+		db.Exec(stmt,
+			company,
+			fake.Phone().E164Number(),
+			"info@"+strings.ReplaceAll(company, " ", "")+".com",
+			fake.Address().BuildingNumber()+" "+fake.Address().StreetName(),
+			fake.Address().City(),
+			fake.Address().State(),
+			fake.Address().PostCode(),
+			time.Now(),
+			time.Now())
+	}
+
+	fmt.Println("End Seeding database")
 }
