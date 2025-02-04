@@ -1,0 +1,8 @@
+.table-hover tbody tr:hover td {
+    background: #edfaff;
+}
+
+div.grid-scroll {
+    height: 200px;
+    overflow-y: scroll;
+}

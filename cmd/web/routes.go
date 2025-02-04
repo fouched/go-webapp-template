@@ -40,6 +40,7 @@ func routes() http.Handler {
 	r.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	r.Get("/", handlers.Instance.Home)
+	r.Get("/customers", handlers.Instance.CustomerGrid)
 
 	return r
 }
