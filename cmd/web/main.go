@@ -27,7 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// close database connection after application has stopped
+	// close database connection pool after application has stopped
 	defer db.SQL.Close()
 
 	mux := routes()
