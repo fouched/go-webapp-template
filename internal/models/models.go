@@ -1,9 +1,16 @@
 package models
 
-type Customer struct {
-	ID int64
-}
+import "time"
 
-type Team struct {
-	ID int64
+type Customer struct {
+	ID           int64
+	CustomerName string
+	Tel          string
+	Email        string
+	Address1     string
+	Address2     string
+	Address3     string
+	PostCode     string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

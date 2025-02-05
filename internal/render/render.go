@@ -41,11 +41,16 @@ type TemplateData struct {
 var templateFS embed.FS
 
 var functions = template.FuncMap{
+	"inc":          inc,
 	"unescapeHTML": unescapeHTML,
 }
 
 func unescapeHTML(s string) template.HTML {
 	return template.HTML(s)
+}
+
+func inc(i int) int {
+	return i + 1
 }
 
 func Template(w http.ResponseWriter, r *http.Request, page string, td *TemplateData, partials ...string) error {

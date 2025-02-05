@@ -12,6 +12,52 @@
             <button class="btn btn-sm btn-primary">&nbsp;&nbsp;New&nbsp;&nbsp;</button>
         </div>
     </div>
+    <div class="col-md-12">
+        <div class="table-responsive grid-scroll">
+            <table class="table table-sm table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Tel</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="searchResult">
+                {{$customers := index .Data "customers"}}
+                {{$size := len $customers}}
+                {{$page := index .IntMap "page"}}
+                {{range $customers}}
+                    <tr>
+                        <td>{{.CustomerName}}</td>
+                        <td>{{.Tel}}</td>
+                        <td><a href="#">{{.Email}}</a></td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-success" href="#">Edit</a>
+                            <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+                        </td>
+                    </tr>
+                {{end}}
+
+                {{if ge $size 20}}
+                    <tr class="text-center">
+                        <td colspan="4">
+                            <span
+                                    hx-target="closest tr"
+                                    hx-trigger="intersect once"
+                                    hx-swap="outerHTML"
+                                    hx-select="tbody > tr"
+                                    hx-get="/customers?page={{inc $page}}"
+                            >
+                            Loading More...
+                            </span>
+                        </td>
+                    </tr>
+                {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {{end}}
 

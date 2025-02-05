@@ -20,15 +20,12 @@ func CustomerService(a *config.App) CustomerServicer {
 			Repo: repo.NewCustomerRepo(a),
 			App:  a,
 		}
-	} else {
-		a.InfoLog.Println("RE-USE customer service")
 	}
+
 	return customerService
 }
 
 func (s *customerServicer) CreateCustomer(c *models.Customer) error {
-	s.App.InfoLog.Println("in services.CreateCustomer")
-
 	err := s.Repo.Create(c)
 	if err != nil {
 		s.App.ErrorLog.Print(err)
@@ -36,4 +33,13 @@ func (s *customerServicer) CreateCustomer(c *models.Customer) error {
 	}
 
 	return nil
+}
+
+func (s *customerServicer) GetCustomerGrid(page int) (*[]models.Customer, error) {
+	customers, err := s.Repo.SelectCustomerGrid(page)
+	if err != nil {
+		return nil, err
+	}
+
+	return customers, nil
 }
