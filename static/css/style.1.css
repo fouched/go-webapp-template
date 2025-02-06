@@ -1,5 +1,6 @@
 .table-hover tbody tr:hover td {
     background: #edfaff;
+    cursor: pointer;
 }
 
 div.grid-scroll {

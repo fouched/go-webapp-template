@@ -114,6 +114,53 @@ func parseTemplate(partials []string, page, templateToRender string) (*template.
 	return t, nil
 }
 
+func Partial(w http.ResponseWriter, r *http.Request, partial string, td *TemplateData) error {
+	var t *template.Template
+	var err error
+	templateToRender := fmt.Sprintf("templates/%s.partial.gohtml", partial)
+
+	_, templateInMap := app.TemplateCache[templateToRender]
+
+	if templateInMap {
+		t = app.TemplateCache[templateToRender]
+	} else {
+		t, err = parsePartial(partial, templateToRender)
+		if err != nil {
+			app.ErrorLog.Println(err)
+			return err
+		}
+	}
+
+	if td == nil {
+		td = &TemplateData{}
+	}
+
+	td = addDefaultData(td, r)
+
+	err = t.Execute(w, td)
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func parsePartial(partial, templateToRender string) (*template.Template, error) {
+	var t *template.Template
+	var err error
+
+	t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).ParseFS(templateFS, templateToRender)
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return nil, err
+	}
+
+	app.TemplateCache[partial] = t
+
+	return t, nil
+}
+
 func addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
 	return td
 }
