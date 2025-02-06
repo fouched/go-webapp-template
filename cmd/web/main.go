@@ -68,7 +68,7 @@ func run() (*driver.DB, error) {
 	app.DB = db
 
 	// seed the database ?
-	//seed(db.SQL)
+	seed(db.SQL)
 
 	// set up session
 	session = scs.New()
@@ -99,6 +99,7 @@ func seed(db *sql.DB) {
     			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 		company := strings.Split(fake.Company().Name(), ",")[0]
+		company = strings.Split(company, "-")[0]
 
 		db.Exec(stmt,
 			company,
