@@ -33,31 +33,32 @@
                     </li>
                 </ul>
                 <div style="width: 50px"></div>
-                <form action="/search" method="get" class="form-inline">
-                    <div class="d-flex">
-                        <input
-                                id="q"
-                                name="q"
-                                class="form-control form-control-sm"
-                                type="search"
-                                placeholder="Search"
-                                aria-label="Search"
-                                hx-get="/search"
-                                hx-target="#searchResult"
-                                hx-swap="outerHTML"
-                                hx-trigger="search, keyup delay:200ms changed"
-                        >
-                    </div>
-                </form>
-                &nbsp;
-                <button
-                        class="btn btn-sm btn-success"
-                        hx-get="/search"
-                        hx-target="#searchResult"
-                        hx-swap="outerHTML"
-                        onclick="resetSearch()"
-                >Clear</button>
-
+                <div class="d-flex flex-nowrap">
+                    <form action="/search" method="get" class="form-inline">
+                        <div class="d-flex">
+                            <input
+                                    id="q"
+                                    name="q"
+                                    class="form-control form-control-sm"
+                                    type="search"
+                                    placeholder="Search"
+                                    aria-label="Search"
+                                    hx-get="/search"
+                                    hx-target="#searchResult"
+                                    hx-swap="outerHTML"
+                                    hx-trigger="search, keyup delay:200ms changed"
+                            >
+                        </div>
+                    </form>
+                    &nbsp;
+                    <button
+                            class="btn btn-sm btn-success"
+                            hx-get="/search"
+                            hx-target="#searchResult"
+                            hx-swap="outerHTML"
+                            onclick="resetSearch()"
+                    >Clear</button>
+                </div>
             </div>
         </div>
     </nav>
