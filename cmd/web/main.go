@@ -68,7 +68,7 @@ func run() (*driver.DB, error) {
 	app.DB = db
 
 	// seed the database ?
-	seed(db.SQL)
+	//seed(db.SQL)
 
 	// set up session
 	session = scs.New()
