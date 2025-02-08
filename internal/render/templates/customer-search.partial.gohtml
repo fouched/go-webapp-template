@@ -1,0 +1,38 @@
+<tbody id="searchResult">
+{{$customers := index .Data "customers"}}
+{{$size := len $customers}}
+{{$page := index .IntMap "page"}}
+{{range $customers}}
+    <tr
+            class="text-nowrap"
+            hx-get="/customers/{{.ID}}"
+            hx-trigger="click"
+            hx-target="#customerDetails"
+            hx-swap="innerHTML"
+    >
+        <td>{{.CustomerName}}</td>
+        <td>{{.Tel}}</td>
+        <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
+        <td class="d-flex flex-nowrap">
+            <a class="btn btn-sm btn-outline-success me-1" href="#">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+        </td>
+    </tr>
+{{end}}
+
+{{if ge $size 20}}
+    <tr class="text-center">
+        <td colspan="4">
+            <span
+                    hx-target="closest tr"
+                    hx-trigger="intersect once"
+                    hx-swap="outerHTML"
+                    hx-select="tbody > tr"
+                    hx-get="/customers?page={{inc $page}}"
+            >
+            Loading More...
+            </span>
+        </td>
+    </tr>
+{{end}}
+</tbody>

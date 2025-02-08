@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
-	h.App.Session.Put(r.Context(), "searchTarget", "customer-rows")
+	h.App.Session.Put(r.Context(), "searchTarget", "customer-search")
 
 	page := 0
 	p := r.URL.Query().Get("page")
@@ -33,7 +33,7 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	_ = render.Template(w, r, "customers", &render.TemplateData{
 		Data:   data,
 		IntMap: intMap,
-	}) //todo add partial for HTMX customer rows
+	})
 }
 
 func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {

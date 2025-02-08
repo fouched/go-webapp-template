@@ -43,3 +43,12 @@ func (s *customerServicer) GetCustomerGrid(page int) (*[]models.Customer, error)
 
 	return customers, nil
 }
+
+func (s *customerServicer) GetCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+	customers, err := s.Repo.SelectCustomerGridWithFilter(page, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return customers, nil
+}

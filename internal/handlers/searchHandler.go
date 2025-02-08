@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"github.com/fouched/go-webapp-template/internal/render"
+	"github.com/fouched/go-webapp-template/internal/services"
 	"net/http"
 	"strconv"
 )
@@ -20,6 +22,24 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	q := r.URL.Query().Get("q")
+	data := make(map[string]interface{})
 
-	h.App.InfoLog.Println("Filter:", q, " Page:", page, "Template:", t)
+	if t == "customer-search" {
+		customers, err := services.CustomerService(h.App).GetCustomerGridWithFilter(page, q)
+		if err != nil {
+			h.App.ErrorLog.Print(err)
+			return
+		}
+		data["customers"] = customers
+	}
+
+	intMap := make(map[string]int)
+	intMap["page"] = page
+	stringMap := make(map[string]string)
+	stringMap["q"] = q
+	_ = render.Partial(w, r, t, &render.TemplateData{
+		Data:      data,
+		IntMap:    intMap,
+		StringMap: stringMap,
+	})
 }

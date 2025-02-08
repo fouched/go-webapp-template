@@ -65,3 +65,39 @@ func (r *postgresCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer,
 
 	return &customers, nil
 }
+
+func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	defer cancel()
+
+	query := `
+		select c.id, c.customer_name, c.tel, c.email 
+		from customer c
+		where upper(customer_name) like upper($1)
+		order by c.customer_name
+		limit $2 offset $3
+	`
+	f := "%" + filter + "%"
+	rows, err := r.DB.QueryContext(ctx, query, f, PageSize, page*PageSize)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var customers []models.Customer
+	for rows.Next() {
+		var c models.Customer
+		err := rows.Scan(
+			&c.ID,
+			&c.CustomerName,
+			&c.Tel,
+			&c.Email,
+		)
+		if err != nil {
+			return nil, err
+		}
+		customers = append(customers, c)
+	}
+
+	return &customers, nil
+}
