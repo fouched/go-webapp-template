@@ -101,3 +101,32 @@ func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter str
 
 	return &customers, nil
 }
+
+func (r *postgresCustomerRepo) SelectCustomerById(id int64) (*models.Customer, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	defer cancel()
+
+	query := `
+		select c.id, c.customer_name, c.tel, c.email, c.address_1, c.address_2, c.address_3, c.post_code 
+		from customer c
+		where c.id = $1
+	`
+
+	var c models.Customer
+	row := r.DB.QueryRowContext(ctx, query, id)
+	err := row.Scan(
+		&c.ID,
+		&c.CustomerName,
+		&c.Tel,
+		&c.Email,
+		&c.Address1,
+		&c.Address2,
+		&c.Address3,
+		&c.PostCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &c, nil
+}

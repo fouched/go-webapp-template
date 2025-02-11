@@ -6,4 +6,5 @@ type CustomerServicer interface {
 	CreateCustomer(request *models.Customer) error
 	GetCustomerGrid(page int) (*[]models.Customer, error)
 	GetCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error)
+	GetCustomerById(id int64) (*models.Customer, error)
 }

@@ -52,3 +52,12 @@ func (s *customerServicer) GetCustomerGridWithFilter(page int, filter string) (*
 
 	return customers, nil
 }
+
+func (s *customerServicer) GetCustomerById(id int64) (*models.Customer, error) {
+	customer, err := s.Repo.SelectCustomerById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return customer, nil
+}

@@ -13,4 +13,5 @@ type CustomerRepo interface {
 	Create(customer *models.Customer) error
 	SelectCustomerGrid(page int) (*[]models.Customer, error)
 	SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error)
+	SelectCustomerById(int int64) (*models.Customer, error)
 }
