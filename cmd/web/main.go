@@ -93,7 +93,7 @@ func seed(db *sql.DB) {
 	fmt.Println("Start Seeding database")
 	fake := faker.New()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 200; i++ {
 		stmt := `INSERT INTO customer (
                       customer_name, tel, email, address_1, address_2, address_3, post_code, created_at, updated_at)
     			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
