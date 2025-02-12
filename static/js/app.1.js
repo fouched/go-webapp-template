@@ -29,6 +29,5 @@ function validate () {
             event.preventDefault();
             form.classList.add('was-validated');
         }
-
     });
 }
