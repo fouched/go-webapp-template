@@ -1,3 +1,7 @@
+body {
+    background-color: #fafbfc !important;
+}
+
 .table-hover tbody tr:hover td {
     background: #edfaff;
     cursor: pointer;
