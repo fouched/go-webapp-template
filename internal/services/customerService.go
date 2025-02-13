@@ -61,3 +61,8 @@ func (s *customerServicer) GetCustomerById(id int64) (*models.Customer, error) {
 
 	return customer, nil
 }
+
+func (s *customerServicer) UpdateCustomer(customer *models.Customer) error {
+	err := s.Repo.UpdateCustomer(customer)
+	return err
+}

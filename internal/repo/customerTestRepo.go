@@ -32,3 +32,7 @@ func (r *testCustomerRepo) SelectCustomerGridWithFilter(page int, filter string)
 func (r *testCustomerRepo) SelectCustomerById(id int64) (*models.Customer, error) {
 	return nil, nil
 }
+
+func (r *testCustomerRepo) UpdateCustomer(customer *models.Customer) error {
+	return nil
+}

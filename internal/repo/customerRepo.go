@@ -35,14 +35,14 @@ func (r *postgresCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer,
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
-	query := `
+	s := `
 		select c.id, c.customer_name, c.tel, c.email 
 		from customer c
 		order by c.customer_name
 		limit $1 offset $2
 	`
 
-	rows, err := r.DB.QueryContext(ctx, query, PageSize, page*PageSize)
+	rows, err := r.DB.QueryContext(ctx, s, PageSize, page*PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter str
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
-	query := `
+	s := `
 		select c.id, c.customer_name, c.tel, c.email 
 		from customer c
 		where upper(customer_name) like upper($1)
@@ -78,7 +78,7 @@ func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter str
 		limit $2 offset $3
 	`
 	f := "%" + filter + "%"
-	rows, err := r.DB.QueryContext(ctx, query, f, PageSize, page*PageSize)
+	rows, err := r.DB.QueryContext(ctx, s, f, PageSize, page*PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -106,14 +106,14 @@ func (r *postgresCustomerRepo) SelectCustomerById(id int64) (*models.Customer, e
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
-	query := `
+	s := `
 		select c.id, c.customer_name, c.tel, c.email, c.address_1, c.address_2, c.address_3, c.post_code 
 		from customer c
 		where c.id = $1
 	`
 
 	var c models.Customer
-	row := r.DB.QueryRowContext(ctx, query, id)
+	row := r.DB.QueryRowContext(ctx, s, id)
 	err := row.Scan(
 		&c.ID,
 		&c.CustomerName,
@@ -129,4 +129,35 @@ func (r *postgresCustomerRepo) SelectCustomerById(id int64) (*models.Customer, e
 	}
 
 	return &c, nil
+}
+
+func (r *postgresCustomerRepo) UpdateCustomer(customer *models.Customer) error {
+	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	defer cancel()
+
+	s := `
+		update customer set 
+			customer_name = $1, 
+			tel = $2, 
+			email = $3, 
+			address_1 = $4, 
+			address_2 = $5, 
+			address_3 = $6, 
+			post_code = $7
+		where id = $8
+	`
+
+	_, err := r.DB.ExecContext(
+		ctx,
+		s,
+		customer.CustomerName,
+		customer.Tel,
+		customer.Email,
+		customer.Address1,
+		customer.Address2,
+		customer.Address3,
+		customer.PostCode,
+	)
+
+	return err
 }
