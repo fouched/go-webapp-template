@@ -90,9 +90,5 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	data["Customer"] = customer
 
 	h.App.Session.Put(r.Context(), "success", "Customer updated successfully")
-	http.Redirect(w, r, "/customers", http.StatusSeeOther)
-}
-
-func (h *Handlers) Toast(w http.ResponseWriter, r *http.Request) {
-	_ = render.Partial(w, r, "toast", &render.TemplateData{})
+	http.Redirect(w, r, "/toast", http.StatusSeeOther)
 }
