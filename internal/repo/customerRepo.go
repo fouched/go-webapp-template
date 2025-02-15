@@ -131,7 +131,7 @@ func (r *postgresCustomerRepo) SelectCustomerById(id int64) (*models.Customer, e
 	return &c, nil
 }
 
-func (r *postgresCustomerRepo) UpdateCustomer(customer *models.Customer) error {
+func (r *postgresCustomerRepo) CustomerUpdate(customer *models.Customer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
@@ -143,8 +143,9 @@ func (r *postgresCustomerRepo) UpdateCustomer(customer *models.Customer) error {
 			address_1 = $4, 
 			address_2 = $5, 
 			address_3 = $6, 
-			post_code = $7
-		where id = $8
+			post_code = $7,
+			updated_at = $8
+		where id = $9
 	`
 
 	_, err := r.DB.ExecContext(
@@ -157,6 +158,8 @@ func (r *postgresCustomerRepo) UpdateCustomer(customer *models.Customer) error {
 		customer.Address2,
 		customer.Address3,
 		customer.PostCode,
+		customer.UpdatedAt,
+		customer.ID,
 	)
 
 	return err

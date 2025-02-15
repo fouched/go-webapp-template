@@ -2,6 +2,10 @@ body {
     background-color: #fafbfc !important;
 }
 
+.page-content {
+    margin-top: 60px;
+}
+
 .table-hover tbody tr:hover td {
     background: #edfaff;
     cursor: pointer;

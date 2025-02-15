@@ -1,5 +1,5 @@
-<div id="customerDetails" class="row mt-3">
-    <form class="needs-validation" novalidate>
+<form hx-post="/customers/{{.Data.Customer.ID}}/update" hx-target="#customers" hx-swap="outerHTML" class="needs-validation" novalidate>
+    <div id="customerDetails" class="row mt-3">
         <div class="row">
             <div>
                 <h6 class="me-auto">Customer Details</h6>
@@ -36,5 +36,6 @@
                 <button type="submit" class="btn btn-sm btn-success" onclick="validate()">Save</button>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
+

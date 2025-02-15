@@ -150,7 +150,8 @@ func parsePartial(partial, templateToRender string) (*template.Template, error) 
 	var t *template.Template
 	var err error
 
-	t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).ParseFS(templateFS, templateToRender)
+	t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
+		ParseFS(templateFS, templateToRender)
 	if err != nil {
 		app.ErrorLog.Println(err)
 		return nil, err
@@ -162,5 +163,9 @@ func parsePartial(partial, templateToRender string) (*template.Template, error) 
 }
 
 func addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
+	td.Success = app.Session.PopString(r.Context(), "success")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
+	td.Error = app.Session.PopString(r.Context(), "error")
+
 	return td
 }
