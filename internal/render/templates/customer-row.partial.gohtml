@@ -1,7 +1,7 @@
 {{template "toast" .}}
 <tr
         id="customer-{{.Data.Customer.ID}}"
-        class="text-nowrap table-success"
+        class="text-nowrap {{with .Success}}table-success{{end}} {{with .Error}}table-danger{{end}}"
         hx-get="/customers/{{.Data.Customer.ID}}"
         hx-trigger="click"
         hx-target="#customerDetails"
