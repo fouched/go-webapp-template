@@ -48,8 +48,7 @@ func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
 	customer, err := services.CustomerService(h.App).GetCustomerById(id)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
+		h.App.Session.Put(r.Context(), "error", "Error getting customer")
 	}
 
 	data := make(map[string]interface{})
@@ -64,9 +63,7 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		h.App.ErrorLog.Print(err)
-		h.App.Session.Put(r.Context(), "error", "Customer could not be updated")
-		http.Redirect(w, r, "/customers", http.StatusSeeOther)
-		return
+		h.App.Session.Put(r.Context(), "error", "Error updating customer")
 	}
 
 	id, _ := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
@@ -85,9 +82,7 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	err = services.CustomerService(h.App).CustomerUpdate(&customer)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
-		h.App.Session.Put(r.Context(), "error", "Customer could not be updated")
-		http.Redirect(w, r, "/customers", http.StatusSeeOther)
-		return
+		h.App.Session.Put(r.Context(), "error", "Error updating customer")
 	}
 
 	data := make(map[string]interface{})

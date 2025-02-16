@@ -23,7 +23,7 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 		customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
 		if err != nil {
 			h.App.ErrorLog.Print(err)
-			return
+			h.App.Session.Put(r.Context(), "error", "Search error")
 		}
 		data["customers"] = customers
 	}
