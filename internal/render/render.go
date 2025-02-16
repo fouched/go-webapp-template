@@ -151,7 +151,7 @@ func parsePartial(partial, templateToRender string) (*template.Template, error) 
 	var err error
 
 	t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-		ParseFS(templateFS, templateToRender)
+		ParseFS(templateFS, "templates/toast.layout.gohtml", templateToRender)
 	if err != nil {
 		app.ErrorLog.Println(err)
 		return nil, err

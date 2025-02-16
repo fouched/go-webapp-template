@@ -1,0 +1,13 @@
+{{define "toast"}}
+<script>
+    {{with .Success}}
+    notify("{{.}}", "success")
+    {{end}}
+    {{with .Warning}}
+    notify("{{.}}", "warning")
+    {{end}}
+    {{with .Error}}
+    notify("{{.}}", "error")
+    {{end}}
+</script>
+{{end}}

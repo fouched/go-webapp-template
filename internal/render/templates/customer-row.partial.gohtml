@@ -1,0 +1,17 @@
+{{template "toast" .}}
+<tr
+        id="customer-{{.Data.Customer.ID}}"
+        class="text-nowrap table-success"
+        hx-get="/customers/{{.Data.Customer.ID}}"
+        hx-trigger="click"
+        hx-target="#customerDetails"
+        hx-swap="innerHTML"
+>
+    <td>{{.Data.Customer.CustomerName}}</td>
+    <td>{{.Data.Customer.Tel}}</td>
+    <td><a href="mailto:{{.Data.Customer.Email}}">{{.Data.Customer.Email}}</a></td>
+    <td class="d-flex flex-nowrap">
+        <a class="btn btn-sm btn-outline-success me-1" href="#">Edit</a>
+        <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+    </td>
+</tr>

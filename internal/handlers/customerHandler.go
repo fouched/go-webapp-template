@@ -82,7 +82,8 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	err = services.CustomerService(h.App).CustomerUpdate(&customer)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		h.App.Session.Put(r.Context(), "error", "Customer could not be updated")
+		http.Redirect(w, r, "/customers", http.StatusSeeOther)
 		return
 	}
 
@@ -90,5 +91,8 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	data["Customer"] = customer
 
 	h.App.Session.Put(r.Context(), "success", "Customer updated successfully")
-	http.Redirect(w, r, "/toast", http.StatusSeeOther)
+	_ = render.Partial(w, r, "customer-row", &render.TemplateData{
+		Data: data,
+	})
+
 }

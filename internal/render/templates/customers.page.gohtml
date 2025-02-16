@@ -29,6 +29,7 @@
                 {{$page := index .IntMap "page"}}
                 {{range $customers}}
                     <tr
+                            id="customer-{{.ID}}"
                             class="text-nowrap"
                             hx-get="/customers/{{.ID}}"
                             hx-trigger="click"
