@@ -37,8 +37,9 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	stringMap["filter"] = filter
 
 	_ = render.Template(w, r, "customers", &render.TemplateData{
-		Data:   data,
-		IntMap: intMap,
+		Data:      data,
+		IntMap:    intMap,
+		StringMap: stringMap,
 	})
 }
 
