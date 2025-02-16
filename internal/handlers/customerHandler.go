@@ -45,7 +45,6 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
-	h.App.InfoLog.Printf("select customer: %d\n", id)
 	customer, err := services.CustomerService(h.App).GetCustomerById(id)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
