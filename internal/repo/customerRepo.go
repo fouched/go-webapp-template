@@ -34,10 +34,8 @@ func (r *postgresCustomerRepo) Create(c *models.Customer) error {
 func (r *postgresCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
 
 	if filter != "" {
-		r.App.InfoLog.Println("Using filtered search")
 		return r.selectCustomerGridWithFilter(page, filter)
 	}
-	r.App.InfoLog.Println("Using normal paging")
 
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()

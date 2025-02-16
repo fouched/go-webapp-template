@@ -25,10 +25,6 @@ func (r *testCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]model
 	return nil, nil
 }
 
-//func (r *testCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
-//	return nil, nil
-//}
-
 func (r *testCustomerRepo) SelectCustomerById(id int64) (*models.Customer, error) {
 	return nil, nil
 }

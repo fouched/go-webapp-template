@@ -4,6 +4,7 @@ import (
 	"github.com/fouched/go-webapp-template/internal/render"
 	"github.com/fouched/go-webapp-template/internal/services"
 	"net/http"
+	"strings"
 )
 
 func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
@@ -15,12 +16,7 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := 0
-	//p := r.URL.Query().Get("page")
-	//if p != "" {
-	//	page, _ = strconv.Atoi(p)
-	//}
-
-	filter := r.URL.Query().Get("filter")
+	filter := strings.TrimLeft(r.URL.Query().Get("filter"), " ")
 	data := make(map[string]interface{})
 
 	if t == "customer-search" {
