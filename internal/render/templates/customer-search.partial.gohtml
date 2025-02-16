@@ -2,6 +2,7 @@
 {{$customers := index .Data "customers"}}
 {{$size := len $customers}}
 {{$page := index .IntMap "page"}}
+{{$filter := index .StringMap "filter"}}
 {{range $customers}}
     <tr
             id="customer-{{.ID}}"
@@ -29,7 +30,7 @@
                     hx-trigger="intersect once"
                     hx-swap="outerHTML"
                     hx-select="tbody > tr"
-                    hx-get="/customers?page={{inc $page}}"
+                    hx-get="/customers?page={{inc $page}}&filter={{$filter}}"
             >
             Loading More...
             </span>
@@ -37,3 +38,6 @@
     </tr>
 {{end}}
 </tbody>
+<script>
+    document.querySelector('.grid-scroll').scrollTop=0;
+</script>

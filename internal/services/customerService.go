@@ -15,7 +15,6 @@ type customerServicer struct {
 
 func CustomerService(a *config.App) CustomerServicer {
 	if customerService == nil {
-		a.InfoLog.Println("Creating customer service")
 		customerService = &customerServicer{
 			Repo: repo.NewCustomerRepo(a),
 			App:  a,
@@ -35,8 +34,8 @@ func (s *customerServicer) CreateCustomer(c *models.Customer) error {
 	return nil
 }
 
-func (s *customerServicer) GetCustomerGrid(page int) (*[]models.Customer, error) {
-	customers, err := s.Repo.SelectCustomerGrid(page)
+func (s *customerServicer) GetCustomerGrid(page int, filter string) (*[]models.Customer, error) {
+	customers, err := s.Repo.SelectCustomerGrid(page, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -44,14 +43,14 @@ func (s *customerServicer) GetCustomerGrid(page int) (*[]models.Customer, error)
 	return customers, nil
 }
 
-func (s *customerServicer) GetCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
-	customers, err := s.Repo.SelectCustomerGridWithFilter(page, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	return customers, nil
-}
+//func (s *customerServicer) GetCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+//	customers, err := s.Repo.SelectCustomerGridWithFilter(page, filter)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return customers, nil
+//}
 
 func (s *customerServicer) GetCustomerById(id int64) (*models.Customer, error) {
 	customer, err := s.Repo.SelectCustomerById(id)

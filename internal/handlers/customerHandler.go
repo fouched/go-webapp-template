@@ -15,12 +15,14 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 
 	page := 0
 	p := r.URL.Query().Get("page")
+	filter := r.URL.Query().Get("filter")
 
 	if p != "" {
 		page, _ = strconv.Atoi(p)
 	}
 
-	customers, err := services.CustomerService(h.App).GetCustomerGrid(page)
+	customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
+
 	if err != nil {
 		h.App.ErrorLog.Print(err)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -31,6 +33,8 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	data["customers"] = customers
 	intMap := make(map[string]int)
 	intMap["page"] = page
+	stringMap := make(map[string]string)
+	stringMap["filter"] = filter
 
 	_ = render.Template(w, r, "customers", &render.TemplateData{
 		Data:   data,

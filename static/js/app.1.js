@@ -1,5 +1,5 @@
 function resetSearch() {
-    let el = document.getElementById('q');
+    let el = document.getElementById('filter');
     el.value='';
     el.focus();
 

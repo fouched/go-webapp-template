@@ -20,14 +20,14 @@ func (r *testCustomerRepo) Create(c *models.Customer) error {
 	return nil
 }
 
-func (r *testCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer, error) {
+func (r *testCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
 	r.App.InfoLog.Println("in TEST customerRepo.SelectCustomerGrid")
 	return nil, nil
 }
 
-func (r *testCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
-	return nil, nil
-}
+//func (r *testCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+//	return nil, nil
+//}
 
 func (r *testCustomerRepo) SelectCustomerById(id int64) (*models.Customer, error) {
 	return nil, nil

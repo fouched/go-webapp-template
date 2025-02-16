@@ -31,7 +31,14 @@ func (r *postgresCustomerRepo) Create(c *models.Customer) error {
 	return nil
 }
 
-func (r *postgresCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer, error) {
+func (r *postgresCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
+
+	if filter != "" {
+		r.App.InfoLog.Println("Using filtered search")
+		return r.selectCustomerGridWithFilter(page, filter)
+	}
+	r.App.InfoLog.Println("Using normal paging")
+
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
@@ -66,7 +73,7 @@ func (r *postgresCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer,
 	return &customers, nil
 }
 
-func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+func (r *postgresCustomerRepo) selectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 

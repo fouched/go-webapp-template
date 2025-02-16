@@ -4,7 +4,6 @@ import (
 	"github.com/fouched/go-webapp-template/internal/render"
 	"github.com/fouched/go-webapp-template/internal/services"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
@@ -16,16 +15,16 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := 0
-	p := r.URL.Query().Get("page")
-	if p != "" {
-		page, _ = strconv.Atoi(p)
-	}
+	//p := r.URL.Query().Get("page")
+	//if p != "" {
+	//	page, _ = strconv.Atoi(p)
+	//}
 
-	q := r.URL.Query().Get("q")
+	filter := r.URL.Query().Get("filter")
 	data := make(map[string]interface{})
 
 	if t == "customer-search" {
-		customers, err := services.CustomerService(h.App).GetCustomerGridWithFilter(page, q)
+		customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
 		if err != nil {
 			h.App.ErrorLog.Print(err)
 			return
@@ -36,7 +35,7 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	intMap := make(map[string]int)
 	intMap["page"] = page
 	stringMap := make(map[string]string)
-	stringMap["q"] = q
+	stringMap["filter"] = filter
 	_ = render.Partial(w, r, t, &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
