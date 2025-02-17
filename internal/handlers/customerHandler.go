@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/fouched/go-webapp-template/internal/models"
 	"github.com/fouched/go-webapp-template/internal/render"
 	"github.com/fouched/go-webapp-template/internal/services"
@@ -22,7 +23,6 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	}
 
 	customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
-
 	if err != nil {
 		h.App.ErrorLog.Print(err)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -57,6 +57,59 @@ func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
 
 	_ = render.Partial(w, r, "customer-details", &render.TemplateData{
 		Data: data,
+	})
+}
+
+func (h *Handlers) CustomerAddGet(w http.ResponseWriter, r *http.Request) {
+	_ = render.Template(w, r, "customer-add", &render.TemplateData{})
+}
+
+func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		h.App.ErrorLog.Print(err)
+		h.App.Session.Put(r.Context(), "error", "Error parsing form for customer insert")
+	}
+
+	customer := models.Customer{
+		CustomerName: r.Form.Get("customerName"),
+		Tel:          r.Form.Get("tel"),
+		Email:        r.Form.Get("email"),
+		Address1:     r.Form.Get("address1"),
+		Address2:     r.Form.Get("address2"),
+		Address3:     r.Form.Get("address3"),
+		PostCode:     r.Form.Get("postCode"),
+		UpdatedAt:    time.Now(),
+	}
+
+	id, err := services.CustomerService(h.App).CustomerInsert(&customer)
+	if err != nil {
+		h.App.ErrorLog.Print(err)
+		h.App.Session.Put(r.Context(), "error", "Error inserting customer")
+	}
+	// in a real app we might to do something with an inserted record
+	h.App.InfoLog.Println(fmt.Sprintf("Inserted customer with id: %d", id))
+	customer.ID = id
+
+	customers, err := services.CustomerService(h.App).GetCustomerGrid(0, "")
+	if err != nil {
+		h.App.ErrorLog.Print(err)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["customers"] = customers
+	intMap := make(map[string]int)
+	intMap["page"] = 0
+	stringMap := make(map[string]string)
+	stringMap["filter"] = ""
+
+	//TODO add the template
+	_ = render.Template(w, r, "customer-add", &render.TemplateData{
+		Data:      data,
+		IntMap:    intMap,
+		StringMap: stringMap,
 	})
 }
 

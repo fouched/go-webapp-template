@@ -24,16 +24,6 @@ func CustomerService(a *config.App) CustomerServicer {
 	return customerService
 }
 
-func (s *customerServicer) CreateCustomer(c *models.Customer) error {
-	err := s.Repo.Create(c)
-	if err != nil {
-		s.App.ErrorLog.Print(err)
-		return err
-	}
-
-	return nil
-}
-
 func (s *customerServicer) GetCustomerGrid(page int, filter string) (*[]models.Customer, error) {
 	customers, err := s.Repo.SelectCustomerGrid(page, filter)
 	if err != nil {
@@ -50,6 +40,11 @@ func (s *customerServicer) GetCustomerById(id int64) (*models.Customer, error) {
 	}
 
 	return customer, nil
+}
+
+func (s *customerServicer) CustomerInsert(customer *models.Customer) (int64, error) {
+	id, err := s.Repo.CustomerInsert(customer)
+	return id, err
 }
 
 func (s *customerServicer) CustomerUpdate(customer *models.Customer) error {

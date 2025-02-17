@@ -15,11 +15,6 @@ func NewTestCustomerRepo(a *config.App) CustomerRepo {
 	}
 }
 
-func (r *testCustomerRepo) Create(c *models.Customer) error {
-	r.App.InfoLog.Println("in TEST customerRepo.CreateCustomer")
-	return nil
-}
-
 func (r *testCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
 	r.App.InfoLog.Println("in TEST customerRepo.SelectCustomerGrid")
 	return nil, nil
@@ -27,6 +22,10 @@ func (r *testCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]model
 
 func (r *testCustomerRepo) SelectCustomerById(id int64) (*models.Customer, error) {
 	return nil, nil
+}
+
+func (r *testCustomerRepo) CustomerInsert(customer *models.Customer) (int64, error) {
+	return 0, nil
 }
 
 func (r *testCustomerRepo) CustomerUpdate(customer *models.Customer) error {

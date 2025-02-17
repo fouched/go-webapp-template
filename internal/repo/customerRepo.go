@@ -19,18 +19,6 @@ func NewCustomerRepo(a *config.App) CustomerRepo {
 	}
 }
 
-func (r *postgresCustomerRepo) Create(c *models.Customer) error {
-	r.App.InfoLog.Println("in postgresCustomerRepo.Create")
-
-	//ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
-	//defer cancel()
-	//
-	//query := ``
-	//rows, err := r.DB.QueryContext(ctx, query)
-
-	return nil
-}
-
 func (r *postgresCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
 
 	if filter != "" {
@@ -134,6 +122,30 @@ func (r *postgresCustomerRepo) SelectCustomerById(id int64) (*models.Customer, e
 	}
 
 	return &c, nil
+}
+
+func (r *postgresCustomerRepo) CustomerInsert(customer *models.Customer) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	defer cancel()
+
+	s := `
+		insert into customer (customer_name, tel, email, address_1, address_2, address_3, post_code) 
+		values ($1, $2, $3, $4, $5, $6, $7) returning id
+	`
+	var id int64
+	err := r.DB.QueryRowContext(
+		ctx,
+		s,
+		customer.CustomerName,
+		customer.Tel,
+		customer.Email,
+		customer.Address1,
+		customer.Address2,
+		customer.Address3,
+		customer.PostCode,
+	).Scan(&id)
+
+	return id, err
 }
 
 func (r *postgresCustomerRepo) CustomerUpdate(customer *models.Customer) error {

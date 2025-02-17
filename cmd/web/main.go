@@ -77,8 +77,8 @@ func run() (*driver.DB, error) {
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	// we can use persistent storage iso cookies for session data, this allows us to
 	// restart the server without users losing the login / session information
-	// https://github.com/alexedwards/scs has various options available
-	//session.Store = pgxstore.New(db)
+	// https://github.com/alexedwards/scs has various options available e.g.
+	// session.Store = pgxstore.New(db)
 	app.Session = session
 
 	// set up handlers and template rendering
@@ -101,7 +101,7 @@ func seed(db *sql.DB) {
 		company := strings.Split(fake.Company().Name(), ",")[0]
 		company = strings.Split(company, "-")[0]
 
-		db.Exec(stmt,
+		_, _ = db.Exec(stmt,
 			company,
 			fake.Phone().E164Number(),
 			"info@"+strings.ReplaceAll(company, " ", "")+".com",

@@ -10,8 +10,8 @@ const DbTimeout = time.Minute * 2
 const PageSize = 20
 
 type CustomerRepo interface {
-	Create(customer *models.Customer) error
 	SelectCustomerGrid(page int, filter string) (*[]models.Customer, error)
 	SelectCustomerById(int int64) (*models.Customer, error)
+	CustomerInsert(customer *models.Customer) (int64, error)
 	CustomerUpdate(customer *models.Customer) error
 }
