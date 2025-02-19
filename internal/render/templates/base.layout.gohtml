@@ -42,7 +42,7 @@
                 </ul>
                 <div style="width: 50px"></div>
                 <div class="d-flex flex-nowrap">
-                    <form action="/search" method="get" class="form-inline">
+                    <form action="/search" method="get" class="form-inline" hx-push-url="true">
                         <div class="d-flex">
                             <input
                                     id="filter"
@@ -55,6 +55,7 @@
                                     hx-target="#searchResult"
                                     hx-swap="outerHTML"
                                     hx-trigger="search, keyup delay:200ms changed"
+                                    hx-push-url="true"
                             >
                         </div>
                     </form>
