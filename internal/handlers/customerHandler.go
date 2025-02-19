@@ -105,12 +105,8 @@ func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
 	stringMap["filter"] = ""
 
-	//TODO add the template
-	_ = render.Template(w, r, "customer-add", &render.TemplateData{
-		Data:      data,
-		IntMap:    intMap,
-		StringMap: stringMap,
-	})
+	//TODO possibly re-render the template to allow adding of another customer
+	http.Redirect(w, r, "/customers", http.StatusSeeOther)
 }
 
 func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
