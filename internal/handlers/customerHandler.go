@@ -106,6 +106,7 @@ func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
 	stringMap["filter"] = ""
 
 	//TODO possibly re-render the template to allow adding of another customer
+	// in this case remove refreshing customers above
 	http.Redirect(w, r, "/customers", http.StatusSeeOther)
 }
 
