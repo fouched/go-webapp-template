@@ -156,7 +156,7 @@ func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Header.Get("HX-Trigger") == "customer-delete-btn" {
-		h.App.Session.Put(r.Context(), "success", "Customer deleted")
+		h.App.Session.Put(r.Context(), "success", "Customer deleted successfully")
 		http.Redirect(w, r, "/customers/", http.StatusSeeOther)
 	}
 }
