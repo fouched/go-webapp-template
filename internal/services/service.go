@@ -7,4 +7,5 @@ type CustomerServicer interface {
 	GetCustomerById(id int64) (*models.Customer, error)
 	CustomerInsert(customer *models.Customer) (int64, error)
 	CustomerUpdate(customer *models.Customer) error
+	DeleteCustomerById(id int64) error
 }

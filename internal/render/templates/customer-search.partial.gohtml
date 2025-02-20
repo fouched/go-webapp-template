@@ -17,8 +17,14 @@
         <td>{{.Tel}}</td>
         <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
         <td class="d-flex flex-nowrap">
-            <a class="btn btn-sm btn-outline-success me-1" href="#">Edit</a>
-            <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+            <button class="btn btn-sm btn-outline-success me-1">Edit</button>
+            <button
+                    id="customer-delete-btn"
+                    class="btn btn-sm btn-outline-danger"
+                    hx-delete="/customers/{{.ID}}"
+                    hx-target="body"
+                    hx-push-url="true"
+            >Delete</button>
         </td>
     </tr>
 {{end}}

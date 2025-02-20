@@ -51,3 +51,7 @@ func (s *customerServicer) CustomerUpdate(customer *models.Customer) error {
 	err := s.Repo.CustomerUpdate(customer)
 	return err
 }
+
+func (s *customerServicer) DeleteCustomerById(id int64) error {
+	return nil
+}

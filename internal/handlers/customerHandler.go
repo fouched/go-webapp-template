@@ -145,3 +145,18 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
+
+func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	err := services.CustomerService(h.App).DeleteCustomerById(id)
+	if err != nil {
+		fmt.Println("Could not delete customer", err)
+		return
+	}
+
+	if r.Header.Get("HX-Trigger") == "customer-delete-btn" {
+		h.App.Session.Put(r.Context(), "success", "Customer deleted")
+		http.Redirect(w, r, "/customers/", http.StatusSeeOther)
+	}
+}
