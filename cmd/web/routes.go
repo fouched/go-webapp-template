@@ -11,7 +11,26 @@ import (
 
 func routes() http.Handler {
 	r := chi.NewRouter()
+	addMiddleware(r)
 
+	// routes
+	r.Get("/", handlers.Instance.Home)
+	r.Get("/search", handlers.Instance.Search)
+	r.Get("/customers", handlers.Instance.CustomerGrid)
+	r.Get("/customers/{id}", handlers.Instance.CustomerDetails)
+	r.Get("/customers/add", handlers.Instance.CustomerAddGet)
+	r.Post("/customers/add", handlers.Instance.CustomerAddPost)
+	r.Post("/customers/{id}/update", handlers.Instance.CustomerUpdate)
+	r.Delete("/customers/{id}", handlers.Instance.CustomerDelete)
+
+	// add ability to render static resources
+	fileServer := http.FileServer(http.Dir("./static/"))
+	r.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
+	return r
+}
+
+func addMiddleware(r *chi.Mux) {
 	// sessions
 	r.Use(SessionLoad)
 
@@ -34,20 +53,4 @@ func routes() http.Handler {
 	// through ctx.Done() that the request has timed out and further
 	// processing should be stopped.
 	r.Use(middleware.Timeout(60 * time.Second))
-
-	// add ability to render static resources
-	fileServer := http.FileServer(http.Dir("./static/"))
-	r.Handle("/static/*", http.StripPrefix("/static", fileServer))
-
-	r.Get("/", handlers.Instance.Home)
-	r.Get("/toast", handlers.Instance.Toast)
-	r.Get("/search", handlers.Instance.Search)
-	r.Get("/customers", handlers.Instance.CustomerGrid)
-	r.Get("/customers/{id}", handlers.Instance.CustomerDetails)
-	r.Get("/customers/add", handlers.Instance.CustomerAddGet)
-	r.Post("/customers/add", handlers.Instance.CustomerAddPost)
-	r.Post("/customers/{id}/update", handlers.Instance.CustomerUpdate)
-	r.Delete("/customers/{id}", handlers.Instance.CustomerDelete)
-
-	return r
 }
