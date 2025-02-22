@@ -14,7 +14,6 @@ import (
 
 func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	h.App.Session.Put(r.Context(), "searchTarget", "customer-search")
-
 	h.App.InfoLog.Println("loading customer grid")
 
 	page := 0
