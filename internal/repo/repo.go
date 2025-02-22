@@ -14,4 +14,5 @@ type CustomerRepo interface {
 	SelectCustomerById(int int64) (*models.Customer, error)
 	CustomerInsert(customer *models.Customer) (int64, error)
 	CustomerUpdate(customer *models.Customer) error
+	CustomerDelete(id int64) error
 }

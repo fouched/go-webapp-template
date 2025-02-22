@@ -8,11 +8,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
 func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	h.App.Session.Put(r.Context(), "searchTarget", "customer-search")
+
+	h.App.InfoLog.Println("loading customer grid")
 
 	page := 0
 	p := r.URL.Query().Get("page")
@@ -85,28 +88,18 @@ func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
 	id, err := services.CustomerService(h.App).CustomerInsert(&customer)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
-		h.App.Session.Put(r.Context(), "error", "Error inserting customer")
+		if strings.Contains(err.Error(), "duplicate") {
+			h.App.Session.Put(r.Context(), "error", "Error customer already exists")
+		} else {
+			h.App.Session.Put(r.Context(), "error", "Error inserting customer")
+		}
+	} else {
+		// in a real app we might to do something with an inserted record
+		h.App.InfoLog.Println(fmt.Sprintf("Inserted customer with id: %d", id))
+		h.App.Session.Put(r.Context(), "success", "Successfully added customer")
+		customer.ID = id
 	}
-	// in a real app we might to do something with an inserted record
-	h.App.InfoLog.Println(fmt.Sprintf("Inserted customer with id: %d", id))
-	customer.ID = id
 
-	customers, err := services.CustomerService(h.App).GetCustomerGrid(0, "")
-	if err != nil {
-		h.App.ErrorLog.Print(err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
-
-	data := make(map[string]interface{})
-	data["customers"] = customers
-	intMap := make(map[string]int)
-	intMap["page"] = 0
-	stringMap := make(map[string]string)
-	stringMap["filter"] = ""
-
-	//TODO possibly re-render the template to allow adding of another customer
-	// in this case remove refreshing customers above
 	http.Redirect(w, r, "/customers", http.StatusSeeOther)
 }
 
@@ -147,16 +140,22 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
+
 	id, _ := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
 	err := services.CustomerService(h.App).DeleteCustomerById(id)
 	if err != nil {
-		fmt.Println("Could not delete customer", err)
-		return
+		h.App.ErrorLog.Print(err)
+		h.App.Session.Put(r.Context(), "error", "Error deleting customer")
+		customer, _ := services.CustomerService(h.App).GetCustomerById(id)
+		data := make(map[string]interface{})
+		data["Customer"] = customer
+		_ = render.Partial(w, r, "customer-row", &render.TemplateData{
+			Data: data,
+		})
+	} else {
+		h.App.Session.Put(r.Context(), "success", "Customer deleted successfully")
+		_ = render.Partial(w, r, "customer-delete", &render.TemplateData{})
 	}
 
-	if r.Header.Get("HX-Trigger") == "customer-delete-btn" {
-		h.App.Session.Put(r.Context(), "success", "Customer deleted successfully")
-		http.Redirect(w, r, "/customers/", http.StatusSeeOther)
-	}
 }

@@ -2,16 +2,29 @@
 <tr
         id="customer-{{.Data.Customer.ID}}"
         class="text-nowrap {{with .Success}}table-success{{end}} {{with .Error}}table-danger{{end}}"
+>
+    <td class="selectable"
         hx-get="/customers/{{.Data.Customer.ID}}"
         hx-trigger="click"
         hx-target="#customerDetails"
-        hx-swap="innerHTML"
->
-    <td>{{.Data.Customer.CustomerName}}</td>
+        hx-swap="innerHTML">{{.Data.Customer.CustomerName}}
+    </td>
     <td>{{.Data.Customer.Tel}}</td>
     <td><a href="mailto:{{.Data.Customer.Email}}">{{.Data.Customer.Email}}</a></td>
     <td class="d-flex flex-nowrap">
-        <a class="btn btn-sm btn-outline-success me-1" href="#">Edit</a>
-        <a class="btn btn-sm btn-outline-danger" href="#">Delete</a>
+        <button class="btn btn-sm btn-outline-success me-1"
+                hx-get="/customers/{{.Data.Customer.ID}}"
+                hx-trigger="click"
+                hx-target="#customerDetails"
+                hx-swap="innerHTML"
+                hx-push-url="true"
+        >Edit</button>
+        <button
+                id="customer-delete-btn"
+                class="btn btn-sm btn-outline-danger"
+                hx-delete="/customers/{{.Data.Customer.ID}}"
+                hx-target="#customer-{{.Data.Customer.ID}}"
+                hx-swap="outerHTML"
+        >Delete</button>
     </td>
 </tr>

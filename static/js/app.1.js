@@ -31,3 +31,16 @@ function validate () {
         }
     });
 }
+
+function notify(msg, msgType) {
+    Swal.fire({
+        position: "top-end",
+        icon: msgType,
+        title: msg,
+        showConfirmButton: false,
+        timer: 2000,
+        toast: true
+    });
+
+    console.log("msg", msg)
+}

@@ -163,6 +163,11 @@ func parsePartial(partial, templateToRender string) (*template.Template, error) 
 }
 
 func addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
+	
+	fmt.Println("success:" + app.Session.GetString(r.Context(), "success"))
+	fmt.Println("warning:" + app.Session.GetString(r.Context(), "warning"))
+	fmt.Println("error:" + app.Session.GetString(r.Context(), "error"))
+
 	td.Success = app.Session.PopString(r.Context(), "success")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.Error = app.Session.PopString(r.Context(), "error")

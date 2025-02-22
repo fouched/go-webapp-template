@@ -31,3 +31,7 @@ func (r *testCustomerRepo) CustomerInsert(customer *models.Customer) (int64, err
 func (r *testCustomerRepo) CustomerUpdate(customer *models.Customer) error {
 	return nil
 }
+
+func (r *testCustomerRepo) CustomerDelete(id int64) error {
+	return nil
+}

@@ -48,10 +48,9 @@ func (s *customerServicer) CustomerInsert(customer *models.Customer) (int64, err
 }
 
 func (s *customerServicer) CustomerUpdate(customer *models.Customer) error {
-	err := s.Repo.CustomerUpdate(customer)
-	return err
+	return s.Repo.CustomerUpdate(customer)
 }
 
 func (s *customerServicer) DeleteCustomerById(id int64) error {
-	return nil
+	return s.Repo.CustomerDelete(id)
 }

@@ -1,4 +1,3 @@
-{{template "toast" .}}
 <form hx-post="/customers/{{.Data.Customer.ID}}/update" hx-target="#customer-{{.Data.Customer.ID}}" hx-swap="outerHTML" class="needs-validation" novalidate>
     <div id="customerDetails" class="row mt-3">
         <div class="row">

@@ -47,6 +47,7 @@ func routes() http.Handler {
 	r.Get("/customers/add", handlers.Instance.CustomerAddGet)
 	r.Post("/customers/add", handlers.Instance.CustomerAddPost)
 	r.Post("/customers/{id}/update", handlers.Instance.CustomerUpdate)
+	r.Delete("/customers/{id}", handlers.Instance.CustomerDelete)
 
 	return r
 }

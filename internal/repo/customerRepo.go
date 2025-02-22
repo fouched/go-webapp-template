@@ -181,3 +181,13 @@ func (r *postgresCustomerRepo) CustomerUpdate(customer *models.Customer) error {
 
 	return err
 }
+
+func (r *postgresCustomerRepo) CustomerDelete(id int64) error {
+	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
+	defer cancel()
+
+	s := "delete from customer where id = $1"
+	_, err := r.DB.ExecContext(ctx, s, id)
+
+	return err
+}
