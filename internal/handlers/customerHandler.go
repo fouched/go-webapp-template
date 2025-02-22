@@ -147,6 +147,8 @@ func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.App.ErrorLog.Print(err)
 		h.App.Session.Put(r.Context(), "error", "Error deleting customer")
+
+		// load the customer again because we normally remove the row from the UI
 		customer, _ := services.CustomerService(h.App).GetCustomerById(id)
 		data := make(map[string]interface{})
 		data["Customer"] = customer
