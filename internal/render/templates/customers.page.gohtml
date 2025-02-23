@@ -29,32 +29,7 @@
                 {{$page := index .IntMap "page"}}
                 {{$filter := index .StringMap "filter"}}
                 {{range $customers}}
-                    <tr id="customer-{{.ID}}" class="text-nowrap">
-                        <td class="selectable"
-                            hx-get="/customers/{{.ID}}"
-                            hx-trigger="click"
-                            hx-target="#customerDetails"
-                            hx-swap="innerHTML">{{.CustomerName}}
-                        </td>
-                        <td>{{.Tel}}</td>
-                        <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
-                        <td class="d-flex flex-nowrap">
-                            <button class="btn btn-sm btn-outline-success me-1"
-                                    hx-get="/customers/{{.ID}}"
-                                    hx-trigger="click"
-                                    hx-target="#customerDetails"
-                                    hx-swap="innerHTML"
-                                    hx-push-url="true"
-                            >Edit</button>
-                            <button
-                                    id="customer-delete-btn"
-                                    class="btn btn-sm btn-outline-danger"
-                                    hx-delete="/customers/{{.ID}}"
-                                    hx-target="#customer-{{.ID}}"
-                                    hx-swap="outerHTML"
-                            >Delete</button>
-                        </td>
-                    </tr>
+                    {{template "customer-row" .}}
                 {{end}}
 
                 {{if ge $size 20}}

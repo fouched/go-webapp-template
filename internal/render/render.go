@@ -114,7 +114,7 @@ func parseTemplate(partials []string, page, templateToRender string) (*template.
 	return t, nil
 }
 
-func Partial(w http.ResponseWriter, r *http.Request, partial string, td *TemplateData) error {
+func Partial(w http.ResponseWriter, r *http.Request, partial string, td *TemplateData, additionalPartials ...string) error {
 	var t *template.Template
 	var err error
 	templateToRender := fmt.Sprintf("templates/%s.partial.gohtml", partial)
@@ -124,7 +124,7 @@ func Partial(w http.ResponseWriter, r *http.Request, partial string, td *Templat
 	if templateInMap {
 		t = app.TemplateCache[templateToRender]
 	} else {
-		t, err = parsePartial(partial, templateToRender)
+		t, err = parsePartial(additionalPartials, partial, templateToRender)
 		if err != nil {
 			app.ErrorLog.Println(err)
 			return err
@@ -146,12 +146,25 @@ func Partial(w http.ResponseWriter, r *http.Request, partial string, td *Templat
 	return nil
 }
 
-func parsePartial(partial, templateToRender string) (*template.Template, error) {
+func parsePartial(additionalPartials []string, partial, templateToRender string) (*template.Template, error) {
 	var t *template.Template
 	var err error
 
-	t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-		ParseFS(templateFS, "templates/toast.layout.gohtml", templateToRender)
+	// build partials
+	if len(additionalPartials) > 0 {
+		for i, x := range additionalPartials {
+			additionalPartials[i] = fmt.Sprintf("templates/%s.partial.gohtml", x)
+		}
+	}
+
+	if len(additionalPartials) > 0 {
+		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
+			ParseFS(templateFS, "templates/toast.partial.gohtml", strings.Join(additionalPartials, ","), templateToRender)
+	} else {
+		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
+			ParseFS(templateFS, "templates/toast.partial.gohtml", templateToRender)
+	}
+
 	if err != nil {
 		app.ErrorLog.Println(err)
 		return nil, err
@@ -163,11 +176,6 @@ func parsePartial(partial, templateToRender string) (*template.Template, error) 
 }
 
 func addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
-	
-	fmt.Println("success:" + app.Session.GetString(r.Context(), "success"))
-	fmt.Println("warning:" + app.Session.GetString(r.Context(), "warning"))
-	fmt.Println("error:" + app.Session.GetString(r.Context(), "error"))
-
 	td.Success = app.Session.PopString(r.Context(), "success")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.Error = app.Session.PopString(r.Context(), "error")

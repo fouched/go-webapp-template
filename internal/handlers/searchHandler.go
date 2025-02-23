@@ -36,5 +36,5 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	})
+	}, "customer-row")
 }

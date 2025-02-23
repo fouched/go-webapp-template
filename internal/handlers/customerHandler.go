@@ -14,7 +14,6 @@ import (
 
 func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	h.App.Session.Put(r.Context(), "searchTarget", "customer-search")
-	h.App.InfoLog.Println("loading customer grid")
 
 	page := 0
 	p := r.URL.Query().Get("page")
@@ -42,7 +41,7 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	})
+	}, "customer-row")
 }
 
 func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
@@ -124,17 +123,19 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 
 	err = services.CustomerService(h.App).CustomerUpdate(&customer)
 	if err != nil {
+		customer.Error = "Error updating customer"
 		h.App.ErrorLog.Print(err)
-		h.App.Session.Put(r.Context(), "error", "Error updating customer")
-	}
+		h.App.Session.Put(r.Context(), "error", customer.Error)
 
+	}
+	customer.Success = "Customer updated successfully"
 	data := make(map[string]interface{})
 	data["Customer"] = customer
 
-	h.App.Session.Put(r.Context(), "success", "Customer updated successfully")
-	_ = render.Partial(w, r, "customer-row", &render.TemplateData{
+	h.App.Session.Put(r.Context(), "success", customer.Success)
+	_ = render.Partial(w, r, "customer-update", &render.TemplateData{
 		Data: data,
-	})
+	}, "customer-row")
 
 }
 

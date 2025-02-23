@@ -11,6 +11,8 @@ type Customer struct {
 	Address2     string
 	Address3     string
 	PostCode     string
+	Success      string
+	Error        string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
