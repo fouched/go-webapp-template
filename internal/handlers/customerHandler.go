@@ -152,9 +152,9 @@ func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
 		customer, _ := services.CustomerService(h.App).GetCustomerById(id)
 		data := make(map[string]interface{})
 		data["Customer"] = customer
-		_ = render.Partial(w, r, "customer-row", &render.TemplateData{
+		_ = render.Partial(w, r, "customer-update", &render.TemplateData{
 			Data: data,
-		})
+		}, "customer-row")
 	} else {
 		h.App.Session.Put(r.Context(), "success", "Customer deleted successfully")
 		_ = render.Partial(w, r, "customer-delete", &render.TemplateData{})
