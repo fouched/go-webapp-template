@@ -25,12 +25,23 @@ func CustomerService(a *config.App) CustomerServicer {
 }
 
 func (s *customerServicer) GetCustomerGrid(page int, filter string) (*[]models.Customer, error) {
-	customers, err := s.Repo.SelectCustomerGrid(page, filter)
-	if err != nil {
-		return nil, err
+
+	if filter == "" {
+		customers, err := s.Repo.SelectCustomerGrid(page)
+		if err != nil {
+			return nil, err
+		}
+
+		return customers, nil
+	} else {
+		customers, err := s.Repo.SelectCustomerGridWithFilter(page, filter)
+		if err != nil {
+			return nil, err
+		}
+
+		return customers, nil
 	}
 
-	return customers, nil
 }
 
 func (s *customerServicer) GetCustomerById(id int64) (*models.Customer, error) {

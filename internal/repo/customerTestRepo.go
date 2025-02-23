@@ -15,8 +15,11 @@ func NewTestCustomerRepo(a *config.App) CustomerRepo {
 	}
 }
 
-func (r *testCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
-	r.App.InfoLog.Println("in TEST customerRepo.SelectCustomerGrid")
+func (r *testCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer, error) {
+	return nil, nil
+}
+
+func (r *testCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
 	return nil, nil
 }
 

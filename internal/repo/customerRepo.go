@@ -19,12 +19,7 @@ func NewCustomerRepo(a *config.App) CustomerRepo {
 	}
 }
 
-func (r *postgresCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]models.Customer, error) {
-
-	if filter != "" {
-		return r.selectCustomerGridWithFilter(page, filter)
-	}
-
+func (r *postgresCustomerRepo) SelectCustomerGrid(page int) (*[]models.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
@@ -41,25 +36,10 @@ func (r *postgresCustomerRepo) SelectCustomerGrid(page int, filter string) (*[]m
 	}
 	defer rows.Close()
 
-	var customers []models.Customer
-	for rows.Next() {
-		var c models.Customer
-		err := rows.Scan(
-			&c.ID,
-			&c.CustomerName,
-			&c.Tel,
-			&c.Email,
-		)
-		if err != nil {
-			return nil, err
-		}
-		customers = append(customers, c)
-	}
-
-	return &customers, nil
+	return getCustomerSlice(rows)
 }
 
-func (r *postgresCustomerRepo) selectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
+func (r *postgresCustomerRepo) SelectCustomerGridWithFilter(page int, filter string) (*[]models.Customer, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DbTimeout)
 	defer cancel()
 
@@ -77,6 +57,10 @@ func (r *postgresCustomerRepo) selectCustomerGridWithFilter(page int, filter str
 	}
 	defer rows.Close()
 
+	return getCustomerSlice(rows)
+}
+
+func getCustomerSlice(rows *sql.Rows) (*[]models.Customer, error) {
 	var customers []models.Customer
 	for rows.Next() {
 		var c models.Customer
