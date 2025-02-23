@@ -150,7 +150,7 @@ func parsePartial(additionalPartials []string, partial, templateToRender string)
 	var t *template.Template
 	var err error
 
-	// build partials
+	// build additional partials
 	if len(additionalPartials) > 0 {
 		for i, x := range additionalPartials {
 			additionalPartials[i] = fmt.Sprintf("templates/%s.partial.gohtml", x)
