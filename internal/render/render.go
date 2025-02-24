@@ -6,7 +6,6 @@ import (
 	"github.com/fouched/go-webapp-template/internal/config"
 	"html/template"
 	"net/http"
-	"strings"
 )
 
 var app *config.App
@@ -89,16 +88,18 @@ func parseTemplate(partials []string, page, templateToRender string) (*template.
 	var t *template.Template
 	var err error
 
-	// build partials
+	templates := []string{"templates/base.layout.gohtml", templateToRender}
+
+	// build templates
 	if len(partials) > 0 {
-		for i, x := range partials {
-			partials[i] = fmt.Sprintf("templates/%s.partial.gohtml", x)
+		for _, x := range partials {
+			templates = append(templates, fmt.Sprintf("templates/%s.partial.gohtml", x))
 		}
 	}
 
 	if len(partials) > 0 {
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
-			ParseFS(templateFS, "templates/base.layout.gohtml", strings.Join(partials, ","), templateToRender)
+			ParseFS(templateFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
 			ParseFS(templateFS, "templates/base.layout.gohtml", templateToRender)
@@ -150,16 +151,18 @@ func parsePartial(additionalPartials []string, partial, templateToRender string)
 	var t *template.Template
 	var err error
 
-	// build additional partials
+	templates := []string{templateToRender, "templates/toast.partial.gohtml"}
+
+	// build additional templates
 	if len(additionalPartials) > 0 {
-		for i, x := range additionalPartials {
-			additionalPartials[i] = fmt.Sprintf("templates/%s.partial.gohtml", x)
+		for _, x := range additionalPartials {
+			templates = append(templates, fmt.Sprintf("templates/%s.partial.gohtml", x))
 		}
 	}
 
 	if len(additionalPartials) > 0 {
 		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-			ParseFS(templateFS, "templates/toast.partial.gohtml", strings.Join(additionalPartials, ","), templateToRender)
+			ParseFS(templateFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
 			ParseFS(templateFS, "templates/toast.partial.gohtml", templateToRender)

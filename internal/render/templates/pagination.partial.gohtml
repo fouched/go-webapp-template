@@ -1,0 +1,18 @@
+{{define "pagination"}}
+{{$page := index .StringMap "Page"}}
+{{$filter := index .StringMap "Filter"}}
+{{$pageNum := index .IntMap "PageNum"}}
+    <tr class="text-center">
+        <td colspan="4">
+            <span
+                    hx-target="closest tr"
+                    hx-trigger="intersect once"
+                    hx-swap="outerHTML"
+                    hx-select="tbody > tr"
+                    hx-get="/{{$page}}?pageNum={{inc $pageNum}}&filter={{$filter}}"
+            >
+            Loading More...
+            </span>
+        </td>
+    </tr>
+{{end}}

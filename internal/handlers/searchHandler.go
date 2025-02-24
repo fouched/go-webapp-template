@@ -29,13 +29,13 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	intMap := make(map[string]int)
-	intMap["pageNum"] = pageNum
+	intMap["PageNum"] = pageNum
 	stringMap := make(map[string]string)
-	stringMap["filter"] = filter
-	stringMap["page"] = page
+	stringMap["Filter"] = filter
+	stringMap["Page"] = page
 	_ = render.Partial(w, r, page+"-search", &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	}, page+"-row")
+	}, page+"-row", "pagination")
 }

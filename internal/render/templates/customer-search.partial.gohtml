@@ -10,19 +10,7 @@
 {{end}}
 
 {{if ge $size 20}}
-    <tr class="text-center">
-        <td colspan="4">
-            <span
-                    hx-target="closest tr"
-                    hx-trigger="intersect once"
-                    hx-swap="outerHTML"
-                    hx-select="tbody > tr"
-                    hx-get="/{{$page}}?pageNum={{inc $pageNum}}&filter={{$filter}}"
-            >
-            Loading More...
-            </span>
-        </td>
-    </tr>
+    {{template "pagination" .}}
 {{end}}
 </tbody>
 <script>

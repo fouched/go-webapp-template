@@ -32,18 +32,18 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := make(map[string]interface{})
-	data["customers"] = customers
+	data["Customers"] = customers
 	intMap := make(map[string]int)
-	intMap["pageNum"] = p
+	intMap["PageNum"] = p
 	stringMap := make(map[string]string)
-	stringMap["page"] = page
-	stringMap["filter"] = filter
+	stringMap["Page"] = page
+	stringMap["Filter"] = filter
 
-	_ = render.Template(w, r, "customer", &render.TemplateData{
+	_ = render.Template(w, r, page, &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	}, "customer-row")
+	}, page+"-row", "pagination")
 }
 
 func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
