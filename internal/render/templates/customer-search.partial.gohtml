@@ -2,7 +2,8 @@
 <tbody id="searchResult">
 {{$customers := index .Data "customers"}}
 {{$size := len $customers}}
-{{$page := index .IntMap "page"}}
+{{$pageNum := index .IntMap "pageNum"}}
+{{$page := index .StringMap "page"}}
 {{$filter := index .StringMap "filter"}}
 {{range $customers}}
     {{template "customer-row" .}}
@@ -16,7 +17,7 @@
                     hx-trigger="intersect once"
                     hx-swap="outerHTML"
                     hx-select="tbody > tr"
-                    hx-get="/customers?page={{inc $page}}&filter={{$filter}}"
+                    hx-get="/{{$page}}?pageNum={{inc $pageNum}}&filter={{$filter}}"
             >
             Loading More...
             </span>

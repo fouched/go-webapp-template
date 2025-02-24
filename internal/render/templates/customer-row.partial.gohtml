@@ -4,7 +4,7 @@
         class="text-nowrap {{with .Success}}table-success{{end}} {{with .Error}}table-danger{{end}}"
 >
     <td class="selectable"
-        hx-get="/customers/{{.ID}}"
+        hx-get="/customer/{{.ID}}"
         hx-trigger="click"
         hx-target="#customerDetails"
         hx-swap="innerHTML">{{.CustomerName}}
@@ -13,7 +13,7 @@
     <td><a href="mailto:{{.Email}}">{{.Email}}</a></td>
     <td class="d-flex flex-nowrap">
         <button class="btn btn-sm btn-outline-success me-1"
-                hx-get="/customers/{{.ID}}"
+                hx-get="/customer/{{.ID}}"
                 hx-trigger="click"
                 hx-target="#customerDetails"
                 hx-swap="innerHTML"
@@ -22,7 +22,7 @@
         <button
                 id="customer-delete-btn"
                 class="btn btn-sm btn-outline-danger"
-                hx-delete="/customers/{{.ID}}"
+                hx-delete="/customer/{{.ID}}"
                 hx-target="#customer-{{.ID}}"
                 hx-swap="outerHTML"
         >Delete</button>

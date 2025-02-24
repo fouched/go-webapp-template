@@ -13,17 +13,18 @@ import (
 )
 
 func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
-	h.App.Session.Put(r.Context(), "searchTarget", "customer-search")
+	page := "customer"
+	h.App.Session.Put(r.Context(), "page", page)
 
-	page := 0
-	p := r.URL.Query().Get("page")
+	p := 0
+	pageNum := r.URL.Query().Get("pageNum")
 	filter := r.URL.Query().Get("filter")
 
-	if p != "" {
-		page, _ = strconv.Atoi(p)
+	if pageNum != "" {
+		p, _ = strconv.Atoi(pageNum)
 	}
 
-	customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
+	customers, err := services.CustomerService(h.App).GetCustomerGrid(p, filter)
 	if err != nil {
 		h.App.ErrorLog.Print(err)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -33,11 +34,12 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
 	data["customers"] = customers
 	intMap := make(map[string]int)
-	intMap["page"] = page
+	intMap["pageNum"] = p
 	stringMap := make(map[string]string)
+	stringMap["page"] = page
 	stringMap["filter"] = filter
 
-	_ = render.Template(w, r, "customers", &render.TemplateData{
+	_ = render.Template(w, r, "customer", &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,

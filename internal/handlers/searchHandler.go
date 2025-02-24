@@ -8,19 +8,19 @@ import (
 )
 
 func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
-	t, ok := h.App.Session.Get(r.Context(), "searchTarget").(string)
+	page, ok := h.App.Session.Get(r.Context(), "page").(string)
 	// this should never happen...
 	if !ok {
 		h.App.ErrorLog.Println("No session data for search exiting ")
 		return
 	}
 
-	page := 0
+	pageNum := 0
 	filter := strings.TrimLeft(r.URL.Query().Get("filter"), " ")
 	data := make(map[string]interface{})
 
-	if t == "customer-search" {
-		customers, err := services.CustomerService(h.App).GetCustomerGrid(page, filter)
+	if page == "customer" {
+		customers, err := services.CustomerService(h.App).GetCustomerGrid(pageNum, filter)
 		if err != nil {
 			h.App.ErrorLog.Print(err)
 			h.App.Session.Put(r.Context(), "error", "Search error")
@@ -29,12 +29,13 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	intMap := make(map[string]int)
-	intMap["page"] = page
+	intMap["pageNum"] = pageNum
 	stringMap := make(map[string]string)
 	stringMap["filter"] = filter
-	_ = render.Partial(w, r, t, &render.TemplateData{
+	stringMap["page"] = page
+	_ = render.Partial(w, r, page+"-search", &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	}, "customer-row")
+	}, page+"-row")
 }
