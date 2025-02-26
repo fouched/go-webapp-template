@@ -33,9 +33,9 @@ func (h *Handlers) Search(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
 	stringMap["Filter"] = filter
 	stringMap["Page"] = page
-	_ = render.Partial(w, r, page+"-search", &render.TemplateData{
+	_ = render.Partial(w, r, page, page+"-search", &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	}, page+"-row", "pagination")
+	}, page+"-row")
 }

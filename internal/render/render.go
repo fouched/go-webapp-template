@@ -36,7 +36,7 @@ type TemplateData struct {
 // with the go embed directive below we can compile
 // the templates with the application in a single binary
 //
-//go:embed templates
+//go:embed templates/* templates/customer/*
 var templateFS embed.FS
 
 var functions = template.FuncMap{
@@ -52,21 +52,21 @@ func inc(i int) int {
 	return i + 1
 }
 
-func Template(w http.ResponseWriter, r *http.Request, page string, td *TemplateData, partials ...string) error {
+func Template(w http.ResponseWriter, r *http.Request, path string, page string, td *TemplateData, partials ...string) error {
 	var t *template.Template
 	var err error
 	templateToRender := fmt.Sprintf("templates/%s.page.gohtml", page)
-
 	_, templateInMap := app.TemplateCache[templateToRender]
 
 	if templateInMap {
 		t = app.TemplateCache[templateToRender]
 	} else {
-		t, err = parseTemplate(partials, page, templateToRender)
+		t, err = parseTemplate(partials, path, page)
 		if err != nil {
 			app.ErrorLog.Println(err)
 			return err
 		}
+		app.TemplateCache[templateToRender] = t
 	}
 
 	if td == nil {
@@ -84,16 +84,16 @@ func Template(w http.ResponseWriter, r *http.Request, page string, td *TemplateD
 	return nil
 }
 
-func parseTemplate(partials []string, page, templateToRender string) (*template.Template, error) {
+func parseTemplate(partials []string, path, page string) (*template.Template, error) {
 	var t *template.Template
 	var err error
 
-	templates := []string{"templates/base.layout.gohtml", templateToRender}
+	templates := []string{"templates/base.layout.gohtml", fmt.Sprintf("templates/%s/%s.page.gohtml", path, page)}
 
 	// build templates
 	if len(partials) > 0 {
-		for _, x := range partials {
-			templates = append(templates, fmt.Sprintf("templates/%s.partial.gohtml", x))
+		for _, p := range partials {
+			templates = append(templates, fmt.Sprintf("templates/%s.partial.gohtml", p))
 		}
 	}
 
@@ -102,34 +102,33 @@ func parseTemplate(partials []string, page, templateToRender string) (*template.
 			ParseFS(templateFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
-			ParseFS(templateFS, "templates/base.layout.gohtml", templateToRender)
+			ParseFS(templateFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
 	}
 
 	if err != nil {
 		app.ErrorLog.Println(err)
 		return nil, err
 	}
-
-	app.TemplateCache[templateToRender] = t
 
 	return t, nil
 }
 
-func Partial(w http.ResponseWriter, r *http.Request, partial string, td *TemplateData, additionalPartials ...string) error {
+func Partial(w http.ResponseWriter, r *http.Request, path string, partial string, td *TemplateData, additionalPartials ...string) error {
 	var t *template.Template
 	var err error
-	templateToRender := fmt.Sprintf("templates/%s.partial.gohtml", partial)
+	templateToRender := fmt.Sprintf("templates/%s/%s.partial.gohtml", path, partial)
 
 	_, templateInMap := app.TemplateCache[templateToRender]
 
 	if templateInMap {
 		t = app.TemplateCache[templateToRender]
 	} else {
-		t, err = parsePartial(additionalPartials, partial, templateToRender)
+		t, err = parsePartial(additionalPartials, path, partial)
 		if err != nil {
 			app.ErrorLog.Println(err)
 			return err
 		}
+		app.TemplateCache[templateToRender] = t
 	}
 
 	if td == nil {
@@ -147,16 +146,16 @@ func Partial(w http.ResponseWriter, r *http.Request, partial string, td *Templat
 	return nil
 }
 
-func parsePartial(additionalPartials []string, partial, templateToRender string) (*template.Template, error) {
+func parsePartial(additionalPartials []string, path, partial string) (*template.Template, error) {
 	var t *template.Template
 	var err error
 
-	templates := []string{templateToRender, "templates/toast.partial.gohtml"}
+	templates := []string{fmt.Sprintf("templates/%s/%s.partial.gohtml", path, partial), "templates/toast.partial.gohtml", "templates/pagination.partial.gohtml"}
 
 	// build additional templates
 	if len(additionalPartials) > 0 {
-		for _, x := range additionalPartials {
-			templates = append(templates, fmt.Sprintf("templates/%s.partial.gohtml", x))
+		for _, p := range additionalPartials {
+			templates = append(templates, fmt.Sprintf("templates/%s/%s.partial.gohtml", path, p))
 		}
 	}
 
@@ -165,15 +164,13 @@ func parsePartial(additionalPartials []string, partial, templateToRender string)
 			ParseFS(templateFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-			ParseFS(templateFS, "templates/toast.partial.gohtml", templateToRender)
+			ParseFS(templateFS, "templates/toast.partial.gohtml", fmt.Sprintf("templates/*/%s.partial.gohtml", partial))
 	}
 
 	if err != nil {
 		app.ErrorLog.Println(err)
 		return nil, err
 	}
-
-	app.TemplateCache[partial] = t
 
 	return t, nil
 }

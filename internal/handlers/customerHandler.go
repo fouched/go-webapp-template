@@ -39,11 +39,11 @@ func (h *Handlers) CustomerGrid(w http.ResponseWriter, r *http.Request) {
 	stringMap["Page"] = page
 	stringMap["Filter"] = filter
 
-	_ = render.Template(w, r, page, &render.TemplateData{
+	_ = render.Template(w, r, "customer", page, &render.TemplateData{
 		Data:      data,
 		IntMap:    intMap,
 		StringMap: stringMap,
-	}, page+"-row", "pagination")
+	}, "customer/"+page+"-row", "pagination")
 }
 
 func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
@@ -58,13 +58,13 @@ func (h *Handlers) CustomerDetails(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
 	data["Customer"] = customer
 
-	_ = render.Partial(w, r, "customer-details", &render.TemplateData{
+	_ = render.Partial(w, r, "customer", "customer-details", &render.TemplateData{
 		Data: data,
 	})
 }
 
 func (h *Handlers) CustomerAddGet(w http.ResponseWriter, r *http.Request) {
-	_ = render.Template(w, r, "customer-add", &render.TemplateData{})
+	_ = render.Template(w, r, "customer", "customer-add", &render.TemplateData{})
 }
 
 func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +135,7 @@ func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {
 	data["Customer"] = customer
 
 	h.App.Session.Put(r.Context(), "success", customer.Success)
-	_ = render.Partial(w, r, "customer-update", &render.TemplateData{
+	_ = render.Partial(w, r, "customer", "customer-update", &render.TemplateData{
 		Data: data,
 	}, "customer-row")
 
@@ -154,12 +154,12 @@ func (h *Handlers) CustomerDelete(w http.ResponseWriter, r *http.Request) {
 		customer, _ := services.CustomerService(h.App).GetCustomerById(id)
 		data := make(map[string]interface{})
 		data["Customer"] = customer
-		_ = render.Partial(w, r, "customer-update", &render.TemplateData{
+		_ = render.Partial(w, r, "customer", "customer-update", &render.TemplateData{
 			Data: data,
 		}, "customer-row")
 	} else {
 		h.App.Session.Put(r.Context(), "success", "Customer deleted successfully")
-		_ = render.Partial(w, r, "customer-delete", &render.TemplateData{})
+		_ = render.Partial(w, r, "customer", "customer-delete", &render.TemplateData{})
 	}
 
 }
