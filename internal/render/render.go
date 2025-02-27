@@ -36,12 +36,17 @@ type TemplateData struct {
 // with the go embed directive below we can compile
 // the templates with the application in a single binary
 //
+//go:embed static/* static/css/* static/img/* static/js/*
 //go:embed templates/* templates/customer/*
-var templateFS embed.FS
+var embedFS embed.FS
 
 var functions = template.FuncMap{
 	"inc":          inc,
 	"unescapeHTML": unescapeHTML,
+}
+
+func EmbedFS() embed.FS {
+	return embedFS
 }
 
 func unescapeHTML(s string) template.HTML {
@@ -99,10 +104,10 @@ func parseTemplate(partials []string, path, page string) (*template.Template, er
 
 	if len(partials) > 0 {
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
-			ParseFS(templateFS, templates...)
+			ParseFS(embedFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
-			ParseFS(templateFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
+			ParseFS(embedFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
 	}
 
 	if err != nil {
@@ -161,10 +166,10 @@ func parsePartial(additionalPartials []string, path, partial string) (*template.
 
 	if len(additionalPartials) > 0 {
 		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-			ParseFS(templateFS, templates...)
+			ParseFS(embedFS, templates...)
 	} else {
 		t, err = template.New(fmt.Sprintf("%s.partial.gohtml", partial)).Funcs(functions).
-			ParseFS(templateFS, "templates/toast.partial.gohtml", fmt.Sprintf("templates/*/%s.partial.gohtml", partial))
+			ParseFS(embedFS, "templates/toast.partial.gohtml", fmt.Sprintf("templates/*/%s.partial.gohtml", partial))
 	}
 
 	if err != nil {

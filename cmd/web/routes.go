@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/fouched/go-webapp-template/internal/handlers"
+	"github.com/fouched/go-webapp-template/internal/render"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -27,8 +28,11 @@ func routes() http.Handler {
 	})
 
 	// add ability to render static resources
-	fileServer := http.FileServer(http.Dir("./static/"))
-	r.Handle("/static/*", http.StripPrefix("/static", fileServer))
+	r.Handle("/static/*", http.FileServer(http.FS(render.EmbedFS())))
+
+	// to externalize above rather use below, and move static files to top level directory of project
+	//fileServer := http.FileServer(http.Dir("./static/"))
+	//r.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	return r
 }
