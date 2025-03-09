@@ -106,8 +106,13 @@ func parseTemplate(partials []string, path, page string) (*template.Template, er
 		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
 			ParseFS(embedFS, templates...)
 	} else {
-		t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
-			ParseFS(embedFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
+		if path == "" || path == "/" {
+			t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
+				ParseFS(embedFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
+		} else {
+			t, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(functions).
+				ParseFS(embedFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/*/%s.page.gohtml", page))
+		}
 	}
 
 	if err != nil {

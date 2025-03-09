@@ -100,7 +100,7 @@ func (h *Handlers) CustomerAddPost(w http.ResponseWriter, r *http.Request) {
 		customer.ID = id
 	}
 
-	http.Redirect(w, r, "/customers", http.StatusSeeOther)
+	http.Redirect(w, r, "/customer", http.StatusSeeOther)
 }
 
 func (h *Handlers) CustomerUpdate(w http.ResponseWriter, r *http.Request) {

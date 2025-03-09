@@ -23,6 +23,8 @@ go.work.sum
 
 # env file
 .env
+
+# other
 .idea
 db-data/
 tmp
