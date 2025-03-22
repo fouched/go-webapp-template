@@ -66,7 +66,7 @@ func Template(w http.ResponseWriter, r *http.Request, path string, page string, 
 	if templateInMap {
 		t = app.TemplateCache[templateToRender]
 	} else {
-		t, err = parseTemplate(partials, path, page)
+		t, err = parseTemplate(path, page, partials)
 		if err != nil {
 			app.ErrorLog.Println(err)
 			return err
@@ -89,7 +89,7 @@ func Template(w http.ResponseWriter, r *http.Request, path string, page string, 
 	return nil
 }
 
-func parseTemplate(partials []string, path, page string) (*template.Template, error) {
+func parseTemplate(path, page string, partials []string) (*template.Template, error) {
 	var t *template.Template
 	var err error
 
@@ -133,7 +133,7 @@ func Partial(w http.ResponseWriter, r *http.Request, path string, partial string
 	if templateInMap {
 		t = app.TemplateCache[templateToRender]
 	} else {
-		t, err = parsePartial(additionalPartials, path, partial)
+		t, err = parsePartial(path, partial, additionalPartials)
 		if err != nil {
 			app.ErrorLog.Println(err)
 			return err
@@ -156,7 +156,7 @@ func Partial(w http.ResponseWriter, r *http.Request, path string, partial string
 	return nil
 }
 
-func parsePartial(additionalPartials []string, path, partial string) (*template.Template, error) {
+func parsePartial(path, partial string, additionalPartials []string) (*template.Template, error) {
 	var t *template.Template
 	var err error
 
