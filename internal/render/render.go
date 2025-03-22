@@ -57,6 +57,7 @@ func inc(i int) int {
 	return i + 1
 }
 
+// Template TODO remove passing of path - let handlers just pass full paths, which simplifies logic below
 func Template(w http.ResponseWriter, r *http.Request, path string, page string, td *TemplateData, partials ...string) error {
 	var t *template.Template
 	var err error
@@ -123,6 +124,7 @@ func parseTemplate(path, page string, partials []string) (*template.Template, er
 	return t, nil
 }
 
+// Partial TODO remove passing of path - let handlers should just pass full paths, which simplifies logic below
 func Partial(w http.ResponseWriter, r *http.Request, path string, partial string, td *TemplateData, additionalPartials ...string) error {
 	var t *template.Template
 	var err error
